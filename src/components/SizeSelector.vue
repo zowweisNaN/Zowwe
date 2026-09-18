@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ShirtSize } from '../types/product'
+import { Ruler } from '@lucide/vue'
 
 const props = defineProps<{
   sizes: ShirtSize[]
@@ -8,12 +9,23 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'select', size: ShirtSize): void
+  (e: 'open-size-guide'): void
 }>()
 </script>
 
 <template>
   <div>
-    <p class="text-xs font-semibold text-slate-grey uppercase tracking-widest mb-2">Select Size</p>
+    <div class="flex items-center justify-between mb-2">
+      <p class="text-xs font-semibold text-slate-grey uppercase tracking-widest">Select Size</p>
+      <button
+        type="button"
+        @click="emit('open-size-guide')"
+        class="text-xs font-bold text-slate-deep hover:text-amber-800 underline underline-offset-2 flex items-center gap-1 transition-colors"
+      >
+        <Ruler class="h-3.5 w-3.5" />
+        Size Guide
+      </button>
+    </div>
     <div class="flex flex-wrap gap-2">
       <button
         v-for="size in sizes"

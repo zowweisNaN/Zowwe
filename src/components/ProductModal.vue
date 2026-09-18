@@ -13,6 +13,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "close"): void;
+  (e: "open-size-guide"): void;
 }>();
 
 let checkout = props.product ? useCheckout(props.product) : null;
@@ -99,6 +100,7 @@ function handleKeydown(e: KeyboardEvent) {
                   :sizes="product.availableSizes"
                   :selected="checkout.selectedSize.value"
                   @select="checkout!.selectSize"
+                  @open-size-guide="emit('open-size-guide'); emit('close')"
                 />
 
                 <div class="border-t border-slate-grey/20 pt-5">

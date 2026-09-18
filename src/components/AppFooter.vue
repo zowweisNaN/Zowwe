@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { ShoppingBag, Camera, MessageCircle } from '@lucide/vue'
+
+const emit = defineEmits<{
+  (e: 'navigate', page: 'home' | 'collection' | 'dashboard' | 'size-guide'): void
+}>()
 </script>
 
 <template>
@@ -25,9 +29,8 @@ import { ShoppingBag, Camera, MessageCircle } from '@lucide/vue'
         <div id="about">
           <h4 class="font-display font-semibold text-warm-sand mb-4">Quick Links</h4>
           <ul class="space-y-2">
-            <li><a href="#catalog" class="text-sm text-slate-grey hover:text-soft-cream transition-colors">Catalog</a></li>
-            <li><a href="#" class="text-sm text-slate-grey hover:text-soft-cream transition-colors">Size Guide</a></li>
-            <li><a href="#" class="text-sm text-slate-grey hover:text-soft-cream transition-colors">Return Policy</a></li>
+            <li><button @click="emit('navigate', 'collection')" class="text-sm text-slate-grey hover:text-soft-cream transition-colors text-left">Collections Catalog</button></li>
+            <li><button @click="emit('navigate', 'size-guide')" class="text-sm text-slate-grey hover:text-soft-cream transition-colors text-left">Size Guide</button></li>
           </ul>
         </div>
 

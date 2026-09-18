@@ -8,11 +8,12 @@ import {
   Layers,
   ShieldCheck,
   LogOut,
+  Ruler
 } from "@lucide/vue";
 import { useAuth } from "../composables/useAuth";
 
 const props = defineProps<{
-  activePage: "home" | "collection" | "dashboard";
+  activePage: "home" | "collection" | "dashboard" | "size-guide";
   isLiveFirebase: boolean;
   isFirebaseConfigured: boolean;
   isSeeding: boolean;
@@ -20,7 +21,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "navigate", page: "home" | "collection" | "dashboard"): void;
+  (e: "navigate", page: "home" | "collection" | "dashboard" | "size-guide"): void;
   (e: "seed"): void;
 }>();
 
@@ -79,6 +80,19 @@ const { isAdmin, adminUser, logout } = useAuth();
           >
             <Layers class="h-3.5 w-3.5" />
             Collections Catalog
+          </button>
+
+          <button
+            @click="emit('navigate', 'size-guide')"
+            class="py-2 border-b-2 transition-all flex items-center gap-1.5 hover:text-slate-deep"
+            :class="
+              activePage === 'size-guide'
+                ? 'border-slate-deep text-slate-deep font-extrabold'
+                : 'border-transparent text-slate-deep/70'
+            "
+          >
+            <Ruler class="h-3.5 w-3.5" />
+            Size Guide
           </button>
         </nav>
 
@@ -152,6 +166,15 @@ const { isAdmin, adminUser, logout } = useAuth();
             class="w-full text-left px-3 py-2 text-xs font-bold uppercase text-slate-deep hover:bg-warm-sand/30 rounded-lg"
           >
             Collections Catalog
+          </button>
+          <button
+            @click="
+              emit('navigate', 'size-guide');
+              mobileOpen = false;
+            "
+            class="w-full text-left px-3 py-2 text-xs font-bold uppercase text-slate-deep hover:bg-warm-sand/30 rounded-lg"
+          >
+            Size Guide
           </button>
 
           <div v-if="isAdmin" class="border-t border-slate-grey/20 pt-2 mt-2">

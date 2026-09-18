@@ -8,6 +8,7 @@ import HomeView from './views/HomeView.vue'
 import CollectionView from './views/CollectionView.vue'
 import DashboardView from './views/DashboardView.vue'
 import LoginView from './views/LoginView.vue'
+import SizeGuideView from './views/SizeGuideView.vue'
 import { useProducts } from './composables/useProducts'
 import { useAuth } from './composables/useAuth'
 import { useCategories } from './composables/useCategories'
@@ -32,7 +33,7 @@ const { categoryNames, initCategories } = useCategories()
 const { isAdmin, isAuthLoading } = useAuth()
 
 // ── Navigation & Page Routing State ────────────────────────────────────────────
-const activePage = ref<'home' | 'collection' | 'dashboard' | 'login'>('home')
+const activePage = ref<'home' | 'collection' | 'dashboard' | 'login' | 'size-guide'>('home')
 const activeProduct = ref<Product | null>(null)
 const homeCategory = ref<ShirtCategory>('All')
 
@@ -58,6 +59,8 @@ function syncPageFromUrl() {
     }
   } else if (path.includes('collection')) {
     activePage.value = 'collection'
+  } else if (path.includes('size-guide')) {
+    activePage.value = 'size-guide'
   } else {
     activePage.value = 'home'
   }
@@ -85,7 +88,7 @@ const homeFilteredProducts = computed(() => {
 })
 
 // ── Handlers ──────────────────────────────────────────────────────────────────
-function navigateTo(page: 'home' | 'collection' | 'dashboard') {
+function navigateTo(page: 'home' | 'collection' | 'dashboard' | 'size-guide') {
   // Guard dashboard: redirect to login if not admin
   if (page === 'dashboard' && !isAdmin.value) {
     activePage.value = 'login'
@@ -94,7 +97,14 @@ function navigateTo(page: 'home' | 'collection' | 'dashboard') {
     return
   }
   activePage.value = page
-  const targetPath = page === 'dashboard' ? '/dashboard' : page === 'collection' ? '/collection' : '/'
+  const targetPath =
+    page === 'dashboard'
+      ? '/dashboard'
+      : page === 'collection'
+      ? '/collection'
+      : page === 'size-guide'
+      ? '/size-guide'
+      : '/'
   if (window.location.pathname !== targetPath) {
     window.history.pushState({}, '', targetPath)
   }
@@ -130,7 +140,7 @@ function closeProduct() {
   <div v-else class="min-h-screen flex flex-col bg-soft-cream text-slate-deep">
     <!-- Header -->
     <AppHeader
-      :active-page="activePage as 'home' | 'collection' | 'dashboard'"
+      :active-page="activePage"
       :is-live-firebase="isLiveFirebase"
       :is-firebase-configured="isFirebaseConfigured"
       :is-seeding="isSeeding"
@@ -164,7 +174,13 @@ function closeProduct() {
         @go-to-home="navigateTo('home')"
       />
 
-      <!-- 3. Dashboard View (only shown when authenticated) -->
+      <!-- 3. Size Guide View -->
+      <SizeGuideView
+        v-else-if="activePage === 'size-guide'"
+        @go-to-collection="navigateTo('collection')"
+      />
+
+      <!-- 4. Dashboard View (only shown when authenticated) -->
       <DashboardView
         v-else-if="activePage === 'dashboard'"
         :products="products"
@@ -182,12 +198,13 @@ function closeProduct() {
     </main>
 
     <!-- Footer -->
-    <AppFooter />
+    <AppFooter @navigate="navigateTo" />
 
     <!-- Product Detail Modal (Shared between pages) -->
     <ProductModal
       :product="activeProduct"
       @close="closeProduct"
+      @open-size-guide="navigateTo('size-guide')"
     />
   </div>
 </template>
